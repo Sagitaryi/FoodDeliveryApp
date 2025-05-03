@@ -12,7 +12,7 @@ enum CoordinatorType {
 protocol CoordinatorProtocol: AnyObject {
     var childCoordinators: [CoordinatorProtocol] { get set }
     var type: CoordinatorType { get }
-    var navigationController: UINavigationController { get set }
+    var navigationController: UINavigationController? { get set }
     var finishDelegate: CoordinatorFinishDelegate? { get set }
 
     func start()
@@ -41,7 +41,7 @@ class Coordinator: CoordinatorProtocol {
 
     var type: CoordinatorType
 
-    var navigationController: UINavigationController
+    var navigationController: UINavigationController?
 
     var finishDelegate: (any CoordinatorFinishDelegate)?
 
