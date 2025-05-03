@@ -12,7 +12,7 @@ enum CoordinatorType {
 protocol CoordinatorProtocol: AnyObject {
     var childCoordinators: [CoordinatorProtocol] { get set }
     var type: CoordinatorType { get }
-    var navigationController: UINavigationController? { get set }
+    var navigationController: UINavigationController { get set }
     var finishDelegate: CoordinatorFinishDelegate? { get set }
 
     func start()
@@ -30,4 +30,45 @@ extension CoordinatorProtocol {
 
 protocol CoordinatorFinishDelegate: AnyObject {
     func coordinatorDidFinish(childCoordinator: CoordinatorProtocol)
+}
+
+protocol TabBarCoordinatorProtocol:AnyObject, CoordinatorProtocol {
+    var tabBarController: UITabBarController? { get set }
+}
+
+class Coordinator: CoordinatorProtocol {
+    var childCoordinators: [any CoordinatorProtocol]
+
+    var type: CoordinatorType
+
+    var navigationController: UINavigationController
+
+    var finishDelegate: (any CoordinatorFinishDelegate)?
+
+    init(childCoordinators: [any CoordinatorProtocol] = [],
+         type: CoordinatorType,
+         navigationController: UINavigationController,
+         finishDelegate: (any CoordinatorFinishDelegate)? = nil)
+    {
+        self.childCoordinators = childCoordinators
+        self.type = type
+        self.navigationController = navigationController
+        self.finishDelegate = finishDelegate
+    }
+
+    deinit {
+        print("Coordinator deineted \(type)")
+        childCoordinators.forEach { $0.finishDelegate = nil }
+        childCoordinators.removeAll()
+    }
+
+    func start() {
+        print("Coordinator Start")
+    }
+
+    func finish() {
+        print("Coordinator Finish")
+    }
+
+
 }
